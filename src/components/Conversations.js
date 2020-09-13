@@ -1,8 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
-import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
+import { Button } from "@material-ui/core";
+import "../styles/conversations.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,17 +14,36 @@ const useStyles = makeStyles((theme) => ({
   inline: {
     display: "inline",
   },
+  conversationItem: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  conversationDate: {
+    color: "gray",
+    fontSize: "11px",
+  },
+  conversationCreateBtn: {
+    width: "100%",
+  },
 }));
 
-export default function Conversations({ conversation, handleListItemClick }) {
+export default function Conversations({ conversation, setSelected }) {
   const classes = useStyles();
 
+  const handleSelect = () => {
+    setSelected(conversation);
+  };
+
   return (
-    <ListItem className={classes.root}>
-      <ListItemText>
-        <div>{conversation.title}</div>
-        <div>{conversation.startDate}</div>
-      </ListItemText>
-    </ListItem>
+    <Button className={classes.conversationCreateBtn} onClick={handleSelect}>
+      <ListItem className={classes.root}>
+        <ListItemText className={classes.conversationItem}>
+          <div>{conversation.title}</div>
+          <div className={classes.conversationDate}>
+            {conversation.startDate}
+          </div>
+        </ListItemText>
+      </ListItem>
+    </Button>
   );
 }

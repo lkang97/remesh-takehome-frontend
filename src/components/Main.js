@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Conversations from "./Conversations";
+import MessageContainer from "./MessageContainer";
 import { apiBaseUrl } from "../config";
+import "../index.css";
 
 import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
@@ -11,9 +13,11 @@ import Divider from "@material-ui/core/Divider";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    height: "100vh",
     maxWidth: "36ch",
     backgroundColor: theme.palette.background.paper,
     borderRight: "1px solid black",
+    overflowY: "scroll",
   },
   inline: {
     display: "inline",
@@ -25,6 +29,7 @@ const Main = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [title, setTitle] = useState(null);
   const [conversations, setConversations] = useState([]);
+  const [selected, setSelected] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
@@ -62,8 +67,8 @@ const Main = () => {
   const id = open ? "simple-popper" : undefined;
 
   return (
-    <div>
-      <div>
+    <div id="main-container">
+      <div id="main-conversations">
         <Button aria-describedby={id} onClick={showForm}>
           Create New Conversation
         </Button>
@@ -80,20 +85,22 @@ const Main = () => {
             </form>
           </div>
         </Popper>
+        <List className={classes.root}>
+          {conversations.map((conversation) => {
+            return (
+              <>
+                <Conversations
+                  key={conversation.id}
+                  conversation={conversation}
+                  setSelected={setSelected}
+                />
+                <Divider />
+              </>
+            );
+          })}
+        </List>
       </div>
-      <List className={classes.root}>
-        {conversations.map((conversation) => {
-          return (
-            <>
-              <Conversations
-                key={conversation.id}
-                conversation={conversation}
-              />
-              <Divider />
-            </>
-          );
-        })}
-      </List>
+      {selected ? <MessageContainer selected={selected} /> : <div></div>}
     </div>
   );
 };
