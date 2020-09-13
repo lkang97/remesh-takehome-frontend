@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { Button } from "@material-ui/core";
-import "../styles/conversations.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {

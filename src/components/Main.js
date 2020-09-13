@@ -11,6 +11,10 @@ import Popper from "@material-ui/core/Popper";
 import Divider from "@material-ui/core/Divider";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
+import TextField from "@material-ui/core/TextField";
+import Fade from "@material-ui/core/Fade";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,10 +31,7 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
+    backgroundColor: "lightgrey",
     marginLeft: 0,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
@@ -68,6 +69,9 @@ const useStyles = makeStyles((theme) => ({
 const Main = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = useState();
+
   const [title, setTitle] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -86,8 +90,10 @@ const Main = () => {
     getConversations();
   }, [isUpdated]);
 
-  const showForm = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  const showForm = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
   };
 
   const createConversation = async (event) => {
@@ -117,27 +123,43 @@ const Main = () => {
     search();
   }, [searchContent]);
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
-
   return (
     <div id="main-container">
       <div id="main-conversations">
-        <Button aria-describedby={id} onClick={showForm}>
+        <Button
+          onClick={showForm("right")}
+          id="conversation-create-btn"
+          color="primary"
+          variant="outlined"
+        >
           Create New Conversation
         </Button>
-        <Popper id={id} open={open} anchorEl={anchorEl}>
-          <div className={classes.paper}>
-            <form onSubmit={createConversation}>
-              <input
-                type="text"
-                placeholder="Title"
-                value={title}
-                onChange={updateTitle}
-              />
-              <button type="submit">Create</button>
-            </form>
-          </div>
+        <Popper
+          open={open}
+          anchorEl={anchorEl}
+          placement={placement}
+          transition
+        >
+          {({ TransitionProps }) => (
+            <Fade {...TransitionProps} timeout={350}>
+              <Paper>
+                <form
+                  id="create-conversation-form"
+                  onSubmit={createConversation}
+                >
+                  <TextField
+                    type="text"
+                    placeholder="Title"
+                    value={title}
+                    onChange={updateTitle}
+                  />
+                  <Button color="primary" type="submit">
+                    Create
+                  </Button>
+                </form>
+              </Paper>
+            </Fade>
+          )}
         </Popper>
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -153,17 +175,21 @@ const Main = () => {
             onChange={(e) => updateSearch(e)}
           />
         </div>
-        <List>
-          {searchResults.map((result) => {
-            return (
-              <Conversations
-                key={result.id}
-                conversation={result}
-                setSelected={setSelected}
-              />
-            );
-          })}
-        </List>
+        {searchContent ? (
+          <List id="search-results">
+            {searchResults.map((result) => {
+              return (
+                <Conversations
+                  key={result.id}
+                  conversation={result}
+                  setSelected={setSelected}
+                />
+              );
+            })}
+          </List>
+        ) : (
+          <div></div>
+        )}
         <List className={classes.root}>
           {conversations.map((conversation) => {
             return (

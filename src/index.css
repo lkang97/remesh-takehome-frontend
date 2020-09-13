@@ -25,3 +25,16 @@ code {
   justify-content: center;
   width: 20vw;
 }
+
+#conversation-create-btn {
+  margin: 10px;
+}
+
+#create-conversation-form {
+  padding: 4px;
+}
+
+#search-results {
+  margin: 5px;
+  background-color: lightgray;
+}
