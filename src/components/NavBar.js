@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -60,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const NavBar = () => {
   const classes = useStyles();
+  const [searchContent, setSearchContent] = useState("");
+
+  const updateSearch = (e) => setSearchContent(e.target.value);
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -78,6 +81,7 @@ const NavBar = () => {
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              onChange={(e) => updateSearch(e)}
             />
           </div>
         </Toolbar>

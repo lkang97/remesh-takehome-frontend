@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { fade, makeStyles } from "@material-ui/core/styles";
 import Conversations from "./Conversations";
 import MessageContainer from "./MessageContainer";
 import { apiBaseUrl } from "../config";
@@ -9,6 +9,8 @@ import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
 import Popper from "@material-ui/core/Popper";
 import Divider from "@material-ui/core/Divider";
+import InputBase from "@material-ui/core/InputBase";
+import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +24,45 @@ const useStyles = makeStyles((theme) => ({
   inline: {
     display: "inline",
   },
+  search: {
+    position: "relative",
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    "&:hover": {
+      backgroundColor: fade(theme.palette.common.white, 0.25),
+    },
+    marginLeft: 0,
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(1),
+      width: "auto",
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: "100%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
+      },
+    },
+  },
 }));
 
 const Main = () => {
@@ -31,6 +72,8 @@ const Main = () => {
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [searchContent, setSearchContent] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const getConversations = async () => {
@@ -62,6 +105,17 @@ const Main = () => {
   };
 
   const updateTitle = (e) => setTitle(e.target.value);
+  const updateSearch = (e) => setSearchContent(e.target.value);
+
+  useEffect(() => {
+    const search = () => {
+      const filtered = conversations.filter((convo) => {
+        return convo.title.toLowerCase().includes(searchContent);
+      });
+      setSearchResults(filtered);
+    };
+    search();
+  }, [searchContent]);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
@@ -85,6 +139,31 @@ const Main = () => {
             </form>
           </div>
         </Popper>
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <SearchIcon />
+          </div>
+          <InputBase
+            placeholder="Search…"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput,
+            }}
+            inputProps={{ "aria-label": "search" }}
+            onChange={(e) => updateSearch(e)}
+          />
+        </div>
+        <List>
+          {searchResults.map((result) => {
+            return (
+              <Conversations
+                key={result.id}
+                conversation={result}
+                setSelected={setSelected}
+              />
+            );
+          })}
+        </List>
         <List className={classes.root}>
           {conversations.map((conversation) => {
             return (
