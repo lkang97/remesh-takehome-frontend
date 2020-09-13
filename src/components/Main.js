@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { fade, makeStyles } from "@material-ui/core/styles";
 import Conversations from "./Conversations";
 import MessageContainer from "./MessageContainer";
 import { apiBaseUrl } from "../config";
 import "../index.css";
 
+// Material UI Components
+import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
 import Popper from "@material-ui/core/Popper";
@@ -14,8 +15,8 @@ import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
 import Fade from "@material-ui/core/Fade";
 import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
 
+// Material UI Styling
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -68,10 +69,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Main = () => {
   const classes = useStyles();
+
+  // State
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [placement, setPlacement] = useState();
-
   const [title, setTitle] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -79,6 +81,7 @@ const Main = () => {
   const [searchContent, setSearchContent] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  // Load all conversations for side bar
   useEffect(() => {
     const getConversations = async () => {
       const response = await fetch(`${apiBaseUrl}/conversations`);
@@ -90,12 +93,18 @@ const Main = () => {
     getConversations();
   }, [isUpdated]);
 
-  const showForm = (newPlacement) => (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
-  };
+  // Filter conversations based off of search results
+  useEffect(() => {
+    const search = () => {
+      const filtered = conversations.filter((convo) => {
+        return convo.title.toLowerCase().includes(searchContent);
+      });
+      setSearchResults(filtered);
+    };
+    search();
+  }, [searchContent, conversations]);
 
+  // Create a new conversation
   const createConversation = async (event) => {
     event.preventDefault();
     const startDate = new Date().toDateString();
@@ -106,22 +115,20 @@ const Main = () => {
     });
 
     if (response.ok) {
+      setTitle("");
       setIsUpdated(!isUpdated);
     }
   };
 
+  // Display new conversation form
+  const showForm = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
   const updateTitle = (e) => setTitle(e.target.value);
   const updateSearch = (e) => setSearchContent(e.target.value);
-
-  useEffect(() => {
-    const search = () => {
-      const filtered = conversations.filter((convo) => {
-        return convo.title.toLowerCase().includes(searchContent);
-      });
-      setSearchResults(filtered);
-    };
-    search();
-  }, [searchContent]);
 
   return (
     <div id="main-container">

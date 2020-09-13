@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { apiBaseUrl } from "../config";
 import Message from "./Message";
+import "../index.css";
 
-import { makeStyles } from "@material-ui/core/styles";
+// Material UI Components
 import TextField from "@material-ui/core/TextField";
 import { List } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 
 const MessageContainer = ({ selected }) => {
+  // State
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
 
+  // Load all messages for a single conversation
   useEffect(() => {
     const getMessages = async () => {
       const response = await fetch(
@@ -25,6 +29,7 @@ const MessageContainer = ({ selected }) => {
     getMessages();
   }, [selected, isUpdated]);
 
+  // Sends a new message
   const createNewMessage = async (event) => {
     event.preventDefault();
     const dateTime = new Date();
@@ -48,28 +53,26 @@ const MessageContainer = ({ selected }) => {
   if (!messages) return null;
 
   return (
-    <div>
-      <List>
+    <div id="messages-container">
+      <Typography id="messages-container-title">{selected.title}</Typography>
+      <List id="messages-list">
         {messages.map((message) => {
-          return (
-            <>
-              <Message key={message.id} message={message} />
-            </>
-          );
+          return <Message key={message.id} message={message} />;
         })}
       </List>
-      <div>
-        <form onSubmit={createNewMessage}>
-          <TextField
-            multiline
-            fullWidth
-            placeholder="Send new message"
-            value={newMessage}
-            onChange={updateNewMessage}
-          />
-          <Button type="submit">Send</Button>
-        </form>
-      </div>
+      <form id="send-message" onSubmit={createNewMessage}>
+        <TextField
+          id="send-message-field"
+          multiline
+          fullWidth
+          placeholder="Send a new message"
+          value={newMessage}
+          onChange={updateNewMessage}
+        />
+        <Button color="primary" variant="contained" type="submit">
+          Send
+        </Button>
+      </form>
     </div>
   );
 };

@@ -1,9 +1,12 @@
 import React from "react";
+
+// Material UI Components
 import { makeStyles } from "@material-ui/core/styles";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { Button } from "@material-ui/core";
 
+// Material UI Styling
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -29,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Conversations({ conversation, setSelected }) {
   const classes = useStyles();
 
+  // Set the current conversation
   const handleSelect = () => {
     setSelected(conversation);
   };

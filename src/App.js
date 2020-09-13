@@ -5,9 +5,9 @@ import NavBar from "./components/NavBar";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <BrowserRouter>
-        <header className="App-header">
+        <header>
           <NavBar />
         </header>
         <Route path="/" exact component={Main} />

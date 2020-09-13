@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 
+// Material UI Components
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import InputBase from "@material-ui/core/InputBase";
-import { fade, makeStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
+import { makeStyles } from "@material-ui/core/styles";
 
+// Material UI Styling
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     justifySelf: "center",
   },
 }));
+
 const NavBar = () => {
   const classes = useStyles();
 

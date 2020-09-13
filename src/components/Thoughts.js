@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { apiBaseUrl } from "../config";
 
+// Material UI Components
+import { makeStyles } from "@material-ui/core/styles";
 import { List } from "@material-ui/core";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
+// Material UI Styling
+const useStyles = makeStyles((theme) => ({
+  thoughtTime: {
+    color: "gray",
+    fontSize: 11,
+  },
+  thoughtContent: {
+    color: "black",
+  },
+}));
+
 const Thoughts = ({ message, isUpdated }) => {
+  const classes = useStyles();
+
+  // State
   const [thoughts, setThoughts] = useState([]);
 
+  // Load all the thoughts for a single message
   useEffect(() => {
     const getThoughts = async () => {
       const response = await fetch(
@@ -19,9 +36,9 @@ const Thoughts = ({ message, isUpdated }) => {
       }
     };
     getThoughts();
-  }, [isUpdated]);
+  }, [isUpdated, message.id]);
 
-  if (!thoughts) return <div>No thoughts yet</div>;
+  if (!thoughts) return null;
 
   return (
     <div>
@@ -30,8 +47,12 @@ const Thoughts = ({ message, isUpdated }) => {
           return (
             <ListItem key={thought.id}>
               <ListItemText>
-                <div>{thought.text}</div>
-                <div>{thought.dateTime}</div>
+                <div
+                  className={classes.thoughtContent}
+                >{`Thought: ${thought.text}`}</div>
+                <div
+                  className={classes.thoughtTime}
+                >{`Time: ${thought.dateTime}`}</div>
               </ListItemText>
             </ListItem>
           );
