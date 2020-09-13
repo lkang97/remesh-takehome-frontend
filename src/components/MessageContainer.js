@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { apiBaseUrl } from "../config";
-import Messages from "./Messages";
+import Message from "./Message";
 
 import { makeStyles } from "@material-ui/core/styles";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Collapse from "@material-ui/core/Collapse";
+import TextField from "@material-ui/core/TextField";
 import { List } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 
 const MessageContainer = ({ selected }) => {
   const [messages, setMessages] = useState([]);
-  const [open, setOpen] = useState(true);
+  const [newMessage, setNewMessage] = useState(null);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -23,7 +23,27 @@ const MessageContainer = ({ selected }) => {
       }
     };
     getMessages();
-  }, [selected]);
+  }, [selected, isUpdated]);
+
+  const createNewMessage = async (event) => {
+    event.preventDefault();
+    const dateTime = new Date();
+    const text = newMessage;
+    const response = await fetch(
+      `${apiBaseUrl}/conversations/${selected.id}/messages`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, dateTime }),
+      }
+    );
+
+    if (response.ok) {
+      setNewMessage("");
+      setIsUpdated(!isUpdated);
+    }
+  };
+  const updateNewMessage = (e) => setNewMessage(e.target.value);
 
   if (!messages) return null;
 
@@ -33,11 +53,23 @@ const MessageContainer = ({ selected }) => {
         {messages.map((message) => {
           return (
             <>
-              <Messages key={message.id} message={message} />
+              <Message key={message.id} message={message} />
             </>
           );
         })}
       </List>
+      <div>
+        <form onSubmit={createNewMessage}>
+          <TextField
+            multiline
+            fullWidth
+            placeholder="Send new message"
+            value={newMessage}
+            onChange={updateNewMessage}
+          />
+          <Button type="submit">Send</Button>
+        </form>
+      </div>
     </div>
   );
 };
