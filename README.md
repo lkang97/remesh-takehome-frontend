@@ -1,7 +1,28 @@
 # Remesh Takehome Assessment
 
 [Live Link To Site](https://remesh-takehome-kang.netlify.app/)
+
 [Link To Backend Repo](https://github.com/lkang97/remesh-takehome-backend)
+
+Backend Instructions:
+
+- Clone the repo and npm install dependencies
+- Create a .env file using the .env.example as a guide
+- Using PostgreSQL; 
+   - create user remesh_user with password ‘remesh_pass’ createdb;
+- Using the command line in the directory you can run
+   - npx dotenv sequelize-cli db:create
+      - This will create the database
+   - npx dotenv sequelize-cli db:migrate
+      - This will create the migrations
+   - npx dotenv sequelize-cli db:seed:all
+      - This will create the seed data
+ - npm start to run the application
+
+Frontend Instructions:
+
+- Clone the repo and npm install dependencies
+- npm start to run the application
 
 # Backend Routes
 
